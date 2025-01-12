@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.4.1</version>
+	</parent>
+	<groupId>org.ohorodnik</groupId>
+	<artifactId>videostreaming</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>videostreaming</name>
+	<description>Java Backend Developer Coding Assignment</description>
+	<properties>
+		<java.version>21</java.version>
+		<testcontainer.version>1.20.4</testcontainer.version>
+		<org.mapstruct.version>1.6.0</org.mapstruct.version>
+	</properties>
+
+	<dependencies>
+		<!--SPRING-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
+		<!--DATABASE-->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!--FLYWAY -->
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+			<version>9.22.3</version>
+		</dependency>
+
+		<!--VIDEO-->
+		<dependency>
+			<groupId>io.minio</groupId>
+			<artifactId>minio</artifactId>
+			<version>8.5.15</version>
+		</dependency>
+
+		<!--SIMPLIFICATION-->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>${org.mapstruct.version}</version>
+		</dependency>
+
+		<!--TESTING -->
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${testcontainer.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>${testcontainer.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.database-rider</groupId>
+			<artifactId>rider-spring</artifactId>
+			<version>1.38.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.vladmihalcea</groupId>
+			<artifactId>db-util</artifactId>
+			<version>1.0.7</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!--CACHE-->
+		<dependency>
+			<groupId>com.github.ben-manes.caffeine</groupId>
+			<artifactId>caffeine</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<version>9.22.3</version>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>migrate</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<driver>org.postgresql.Driver</driver>
+					<url>jdbc:postgresql://127.0.0.1:5432/videostreaming</url>
+					<user>postgres</user>
+					<password>postgres</password>
+					<baselineOnMigrate>true</baselineOnMigrate>
+					<schemas>public</schemas>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<source>21</source>
+					<target>21</target>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>${org.mapstruct.version}</version>
+						</path>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
+						</path>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok-mapstruct-binding</artifactId>
+							<version>0.2.0</version>
+						</path>
+					</annotationProcessorPaths>
+					<compilerArgument>
+						-Amapstruct.defaultComponentModel=spring
+					</compilerArgument>
+				</configuration>
+			</plugin>
+			<!--Next plugin is to try and debug its value - for study purpose-->
+			<plugin>
+				<groupId>org.hibernate.orm.tooling</groupId>
+				<artifactId>hibernate-enhance-maven-plugin</artifactId>
+				<version>${hibernate.version}</version>
+				<executions>
+					<execution>
+						<configuration>
+							<!--By setting the enableLazyInitialization to true, Hibernate changes the bytecode of the
+                                getter and setter methods to intercept the call and trigger the property initialization on demand.-->
+							<enableLazyInitialization>true</enableLazyInitialization>
+							<!--The enableDirtyTracking option allows you to record which properties have changed so that
+                                the Hibernate dirty checking mechanism gets the list of changes without having to inspect every property via Java Reflection.-->
+							<enableDirtyTracking>true</enableDirtyTracking>
+							<!--The enableAssociationManagement option tries to address the requirement of synchronizing both sides of a bidirectional association.-->
+							<enableAssociationManagement>true</enableAssociationManagement>
+						</configuration>
+						<goals>
+							<goal>enhance</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

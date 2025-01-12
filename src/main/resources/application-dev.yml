@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    username: postgres
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/videostreaming
+  jpa:
+    open-in-view: false
+    # Below two properties are to add to the log sql queries hibernate does.
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+minio:
+  url: http://localhost:9000
+  username: admin
+  password: adminpass
+  put-object-part-size: 5242880 #value in bytes (5 MB equivalent)
+
+app:
+  streaming:
+    default-chunk-size: 3145728 #value in bytes

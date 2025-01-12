@@ -1,0 +1,9 @@
+spring:
+  profiles:
+    active: dev
+  datasource:
+    hikari:
+      idleTimeout: 30000
+      maximumPoolSize: 10
+  jpa:
+    open-in-view: false
