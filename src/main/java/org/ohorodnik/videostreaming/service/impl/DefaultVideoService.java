@@ -79,7 +79,10 @@ public class DefaultVideoService implements VideoService {
     public ChunkWithMetadata play(UUID uuid, Range range) {
         updateStatisticsView(uuid, range);
         PlayingVideoDto playingVideoDto = videoMapper.toPlayingVideoDto(findByUuidAndStatus(uuid));
-        return new ChunkWithMetadata(playingVideoDto, readChunk(uuid, range, playingVideoDto.getSize()));
+        return new ChunkWithMetadata(playingVideoDto,
+                calculateContentLengthHeader(range, playingVideoDto.getSize()),
+                constructContentRangeHeader(range, playingVideoDto.getSize()),
+                readChunk(uuid, range, playingVideoDto.getSize()));
     }
 
     @Override
@@ -123,6 +126,14 @@ public class DefaultVideoService implements VideoService {
             log.error("Exception occurred when trying to read file with ID = {}", uuid);
             throw new StorageException(String.format(STORAGE_EXCEPTION_MESSAGE, uuid));
         }
+    }
+
+    private String calculateContentLengthHeader(Range range, long fileSize) {
+        return String.valueOf(range.getRangeEnd(fileSize) - range.getRangeStart() + 1);
+    }
+
+    private String constructContentRangeHeader(Range range, long fileSize) {
+        return "bytes " + range.getRangeStart() + "-" + range.getRangeEnd(fileSize) + "/" + fileSize;
     }
 
     private void updateStatisticsView(UUID uuid, Range range) {

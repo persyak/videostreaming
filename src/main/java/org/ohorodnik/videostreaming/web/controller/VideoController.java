@@ -56,10 +56,8 @@ public class VideoController {
         return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT)
                 .header(CONTENT_TYPE, chunkWithMetadata.playingVideoDto().getHttpContentType())
                 .header(ACCEPT_RANGES, ACCEPTS_RANGES_VALUE)
-                .header(CONTENT_LENGTH, calculateContentLengthHeader(parsedRange,
-                        chunkWithMetadata.playingVideoDto().getSize()))
-                .header(CONTENT_RANGE, constructContentRangeHeader(parsedRange,
-                        chunkWithMetadata.playingVideoDto().getSize()))
+                .header(CONTENT_LENGTH, chunkWithMetadata.contentLength())
+                .header(CONTENT_RANGE, chunkWithMetadata.contentRange())
                 .body(chunkWithMetadata.chunk());
     }
 
@@ -72,13 +70,5 @@ public class VideoController {
     protected VideoDto load(@PathVariable UUID uuid,
                             @RequestParam("path") String path) throws Exception {
         return videoService.load(uuid, path);
-    }
-
-    private String calculateContentLengthHeader(Range range, long fileSize) {
-        return String.valueOf(range.getRangeEnd(fileSize) - range.getRangeStart() + 1);
-    }
-
-    private String constructContentRangeHeader(Range range, long fileSize) {
-        return "bytes " + range.getRangeStart() + "-" + range.getRangeEnd(fileSize) + "/" + fileSize;
     }
 }
