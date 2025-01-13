@@ -1,8 +1,7 @@
 package org.ohorodnik.videostreaming.service;
 
-import org.ohorodnik.videostreaming.dto.AddMetadataDto;
+import org.ohorodnik.videostreaming.dto.AddUpdateMetadataDto;
 import org.ohorodnik.videostreaming.dto.MetadataGeneralDto;
-import org.ohorodnik.videostreaming.dto.UpdateMetadataDto;
 import org.ohorodnik.videostreaming.dto.MetadataDto;
 
 import java.util.List;
@@ -10,9 +9,9 @@ import java.util.UUID;
 
 public interface MetadataService {
 
-    MetadataDto addMetadata(AddMetadataDto addMetadataDto, UUID videoUuid);
+    MetadataDto addMetadata(AddUpdateMetadataDto addUpdateMetadataDto, UUID videoUuid);
 
-    MetadataDto updateMetadata(UpdateMetadataDto editMetadataDto, Integer id);
+    MetadataDto updateMetadata(AddUpdateMetadataDto addUpdateMetadataDto, Integer id);
 
     List<MetadataGeneralDto> findAll();
 

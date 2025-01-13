@@ -1,9 +1,8 @@
 package org.ohorodnik.videostreaming.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.ohorodnik.videostreaming.dto.AddMetadataDto;
+import org.ohorodnik.videostreaming.dto.AddUpdateMetadataDto;
 import org.ohorodnik.videostreaming.dto.MetadataGeneralDto;
-import org.ohorodnik.videostreaming.dto.UpdateMetadataDto;
 import org.ohorodnik.videostreaming.dto.MetadataDto;
 import org.ohorodnik.videostreaming.entity.Metadata;
 import org.ohorodnik.videostreaming.entity.Video;
@@ -31,11 +30,11 @@ public class DefaultMetadataService implements MetadataService {
 
     @Override
     @Transactional
-    public MetadataDto addMetadata(AddMetadataDto addMetadataDto, UUID videoUuid) {
+    public MetadataDto addMetadata(AddUpdateMetadataDto addUpdateMetadataDto, UUID videoUuid) {
         Video video = videoRepository.findByUuid(videoUuid.toString())
                 .orElseThrow(() -> new VideoNotFoundException("No such video found"));
 
-        Metadata metadataToSave = metadataMapper.toMetadata(addMetadataDto);
+        Metadata metadataToSave = metadataMapper.toMetadata(addUpdateMetadataDto);
         metadataToSave.setStatus(A);
         metadataToSave.setVideo(video);
 
@@ -46,18 +45,10 @@ public class DefaultMetadataService implements MetadataService {
 
     @Override
     @Transactional
-    public MetadataDto updateMetadata(UpdateMetadataDto updateMetadataDto, Integer id) {
+    public MetadataDto updateMetadata(AddUpdateMetadataDto addUpdateMetadataDto, Integer id) {
         Metadata originalMetadata = metadataRepository.findById(id).orElseThrow(
                 () -> new MetadataNotFoundException("Metadata not found"));
-
-        Metadata updatedMetadata = Metadata.builder()
-                .id(originalMetadata.getId())
-                .status(originalMetadata.getStatus())
-                .video(originalMetadata.getVideo())
-                .build();
-
-        metadataMapper.update(updatedMetadata, updateMetadataDto);
-
+        Metadata updatedMetadata = metadataMapper.update(originalMetadata, addUpdateMetadataDto);
         return metadataMapper.toMetadataDto(metadataRepository.save(updatedMetadata));
     }
 

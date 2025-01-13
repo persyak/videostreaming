@@ -4,10 +4,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
-import org.ohorodnik.videostreaming.dto.AddMetadataDto;
+import org.ohorodnik.videostreaming.dto.AddUpdateMetadataDto;
 import org.ohorodnik.videostreaming.dto.MetadataDto;
 import org.ohorodnik.videostreaming.dto.MetadataGeneralDto;
-import org.ohorodnik.videostreaming.dto.UpdateMetadataDto;
 import org.ohorodnik.videostreaming.entity.Metadata;
 
 import java.time.Duration;
@@ -20,7 +19,7 @@ public interface MetadataMapper {
 
     @Mapping(target = "yearOfRelease", source = "yearOfRelease", qualifiedByName = "mapYearOfRelease")
     @Mapping(target = "runningTime", source = "runningTime", qualifiedByName = "mapRunningTime")
-    Metadata toMetadata(AddMetadataDto addMetadataDto);
+    Metadata toMetadata(AddUpdateMetadataDto addUpdateMetadataDto);
 
     MetadataDto toMetadataDto(Metadata metadata);
 
@@ -28,7 +27,7 @@ public interface MetadataMapper {
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "yearOfRelease", source = "yearOfRelease", qualifiedByName = "mapYearOfRelease")
     @Mapping(target = "runningTime", source = "runningTime", qualifiedByName = "mapRunningTime")
-    Metadata update(@MappingTarget Metadata metadata, UpdateMetadataDto updateMetadataDto);
+    Metadata update(@MappingTarget Metadata metadata, AddUpdateMetadataDto addUpdateMetadataDto);
 
     List<MetadataGeneralDto> toMetadataGeneralDtoList(List<Metadata> list);
 

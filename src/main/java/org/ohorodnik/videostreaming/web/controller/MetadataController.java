@@ -2,9 +2,8 @@ package org.ohorodnik.videostreaming.web.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.ohorodnik.videostreaming.dto.AddMetadataDto;
+import org.ohorodnik.videostreaming.dto.AddUpdateMetadataDto;
 import org.ohorodnik.videostreaming.dto.MetadataGeneralDto;
-import org.ohorodnik.videostreaming.dto.UpdateMetadataDto;
 import org.ohorodnik.videostreaming.dto.MetadataDto;
 import org.ohorodnik.videostreaming.service.MetadataService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,24 +24,24 @@ public class MetadataController {
     private final MetadataService metadataService;
 
     @PostMapping("/add/{uuid}")
-    protected MetadataDto addMetadata(@Valid @RequestBody AddMetadataDto addMetadataDto,
+    protected MetadataDto addMetadata(@Valid @RequestBody AddUpdateMetadataDto addUpdateMetadataDto,
                                       @PathVariable UUID uuid) {
-        return metadataService.addMetadata(addMetadataDto, uuid);
+        return metadataService.addMetadata(addUpdateMetadataDto, uuid);
     }
 
     @PostMapping("/update/{id}")
-    protected MetadataDto updateMetadata(@Valid @RequestBody UpdateMetadataDto updateMetadataDto,
-                                       @PathVariable Integer id){
-        return metadataService.updateMetadata(updateMetadataDto, id);
+    protected MetadataDto updateMetadata(@Valid @RequestBody AddUpdateMetadataDto addUpdateMetadataDto,
+                                         @PathVariable Integer id) {
+        return metadataService.updateMetadata(addUpdateMetadataDto, id);
     }
 
     @GetMapping
-    protected List<MetadataGeneralDto> findAll(){
+    protected List<MetadataGeneralDto> findAll() {
         return metadataService.findAll();
     }
 
     @GetMapping("/{director}")
-    protected List<MetadataGeneralDto> findByDirector(@PathVariable String director){
+    protected List<MetadataGeneralDto> findByDirector(@PathVariable String director) {
         return metadataService.findByDirector(director);
     }
 }

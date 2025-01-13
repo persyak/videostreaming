@@ -11,7 +11,7 @@ import lombok.ToString;
 @Builder
 @ToString
 @EqualsAndHashCode
-public class UpdateMetadataDto {
+public class AddUpdateMetadataDto {
 
     @NotBlank(message = "Please add title")
     @Size(min = 3)
