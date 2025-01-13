@@ -38,7 +38,7 @@ public class DefaultVideoService implements VideoService {
     private final VideoRepository videoRepository;
     private final VideoMapper videoMapper;
 
-    Cache<UUID, Video> cache = Caffeine.newBuilder()
+    private final Cache<UUID, Video> cache = Caffeine.newBuilder()
             .expireAfterWrite(24, TimeUnit.HOURS)
             .initialCapacity(100)
             .maximumSize(10000)
