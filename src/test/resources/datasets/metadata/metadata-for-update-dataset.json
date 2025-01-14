@@ -1,0 +1,16 @@
+{
+  "metadata": [
+    {
+      "id": 1,
+      "video_id": 1,
+      "title": "testTitleFirst",
+      "synopsis": "test synopsis first",
+      "director": "testDirectorFirst",
+      "actors": "actorFirst, actorSecond",
+      "year_of_release": "2019-01-01",
+      "genre": "testGenreFirst",
+      "running_time": 300000000000,
+      "status": "A"
+    }
+  ]
+}
