@@ -1,0 +1,10 @@
+{
+  "id": 1,
+  "title": "testTitle",
+  "synopsis": "test synopsis",
+  "director": "testDirector",
+  "actors": "actorFirst, actorSecond",
+  "yearOfRelease": "2019-01-01",
+  "genre": "testGenre",
+  "runningTime": "PT5M"
+}
