@@ -1,0 +1,20 @@
+{
+  "video": [
+    {
+      "id": 1,
+      "size": 108504721,
+      "http_content_type": "video/quicktime",
+      "original_file_name": "testFileNameFirst.mov",
+      "uuid": "065b1c00-22ca-43e6-bd1a-3a571b394041",
+      "status": "A"
+    },
+    {
+      "id": 2,
+      "size": 208504721,
+      "http_content_type": "video/quicktime",
+      "original_file_name": "testFileNameSecond.mov",
+      "uuid": "c42fed70-ad64-4529-ab8f-42f8111a8858",
+      "status": "A"
+    }
+  ]
+}

@@ -4,6 +4,7 @@ import org.ohorodnik.videostreaming.exception.MetadataNotFoundException;
 import org.ohorodnik.videostreaming.exception.StorageException;
 import org.ohorodnik.videostreaming.exception.VideoNotFoundException;
 import org.ohorodnik.videostreaming.exception.dto.ErrorMessage;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -34,5 +35,12 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         ErrorMessage errorMessage = new ErrorMessage(exception.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+    }
+
+    @ExceptionHandler(EmptyResultDataAccessException.class)
+    public ResponseEntity<ErrorMessage> emptyResultDataAccessException(EmptyResultDataAccessException exception) {
+        ErrorMessage errorMessage = new ErrorMessage("No result found for current query");
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
     }
 }
