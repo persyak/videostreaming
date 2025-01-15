@@ -32,7 +32,7 @@ public class MetadataControllerITest extends BaseContainerImpl {
     private MockMvc mockMvc;
 
     @Test
-    @DataSet(value = VIDEO_FOR_ADDED_METADATA_DATASET, skipCleaningFor = "flyway_schema_history")
+    @DataSet(value = VIDEO_FOR_ADDED_METADATA_DATASET, cleanAfter = true, skipCleaningFor = "flyway_schema_history")
     @ExpectedDataSet(value = {ADDED_METADATA_DATASET, VIDEO_FOR_ADDED_METADATA_DATASET})
     @DisplayName("Test while adding metadata, it's added and OK status is received")
     public void whenAddMetadata_thenAddedMetadataReturnedAndOkStatusReceived() throws Exception {
@@ -45,7 +45,17 @@ public class MetadataControllerITest extends BaseContainerImpl {
     }
 
     @Test
-    @DataSet(value = {METADATA_FOR_UPDATE_DATASET, VIDEO_FOR_UPDATE_METADATA_DATASET}, skipCleaningFor = "flyway_schema_history")
+    @DisplayName("When video is not available, then throw exception when adding metadata for this video")
+    public void whenAddingMetadataForNonExistingVideo_thenThrowVideoNotFoundException() throws Exception {
+        mockMvc.perform(post("/api/v1/metadata/add/065b1c00-22ca-43e6-bd1a-3a571b394041")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createAddDtoWithAllData())))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("No such video found"));
+    }
+
+    @Test
+    @DataSet(value = {METADATA_FOR_UPDATE_DATASET, VIDEO_FOR_UPDATE_METADATA_DATASET}, cleanAfter = true, skipCleaningFor = "flyway_schema_history")
     @ExpectedDataSet(value = {UPDATED_METADATA_DATASET, VIDEO_FOR_UPDATE_METADATA_DATASET})
     @DisplayName("Test while updating metadata, it's updated and OK status is received")
     public void whenUpdateMetadata_thenOkStatusAndUpdatedMetadataAreReceived() throws Exception {
@@ -58,7 +68,19 @@ public class MetadataControllerITest extends BaseContainerImpl {
     }
 
     @Test
-    @DataSet(value = {FINDALL_METADATA_DATASET, FINDALL_VIDEO_DATASET}, skipCleaningFor = "flyway_schema_history")
+    @DisplayName("Throw exception, when updating metadata, that does not exist")
+    public void whenRequestedMetadataIsNotAvailable_thenThrowExceptionWhenUpdateMetadata() throws Exception {
+        mockMvc.perform(post("/api/v1/metadata/update/2")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createUpdateDtoWithAllData())))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Metadata not found"));
+    }
+
+    @Test
+    @DataSet(value = {FINDALL_METADATA_DATASET, FINDALL_VIDEO_DATASET},
+            cleanAfter = true,
+            skipCleaningFor = "flyway_schema_history")
     public void whenFindAll_thenTwoItemsAreReceived() throws Exception {
         mockMvc.perform(get("/api/v1/metadata")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -66,6 +88,19 @@ public class MetadataControllerITest extends BaseContainerImpl {
                 .andExpect(jsonPath("$.size()").value(2))
                 .andExpect(content()
                         .json(getResponseAsString("responses/metadata/find-all-metadata.json")));
+    }
+
+    @Test
+    @DataSet(value = {FINDALL_METADATA_DATASET, FINDALL_VIDEO_DATASET},
+            cleanAfter = true,
+            skipCleaningFor = "flyway_schema_history")
+    public void whenFindByDirector_thenOneItemIsReturned() throws Exception {
+        mockMvc.perform(get("/api/v1/metadata/second")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(1))
+                .andExpect(content()
+                        .json(getResponseAsString("responses/metadata/find-all-by-director-metadata.json")));
     }
 
     private AddUpdateMetadataDto createAddDtoWithAllData() {
