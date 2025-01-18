@@ -1,6 +1,7 @@
 package org.ohorodnik.videostreaming.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.ohorodnik.videostreaming.dto.AddUpdateMetadataDto;
 import org.ohorodnik.videostreaming.dto.MetadataGeneralDto;
 import org.ohorodnik.videostreaming.dto.MetadataDto;
@@ -20,6 +21,7 @@ import java.util.UUID;
 
 import static org.ohorodnik.videostreaming.utils.enums.Status.A;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DefaultMetadataService implements MetadataService {
@@ -39,6 +41,7 @@ public class DefaultMetadataService implements MetadataService {
         metadataToSave.setVideo(video);
 
         Metadata saved = metadataRepository.save(metadataToSave);
+        log.info("metadata saved under id {} for video {}", saved.getId(), videoUuid);
 
         return metadataMapper.toMetadataDto(saved);
     }
@@ -49,18 +52,21 @@ public class DefaultMetadataService implements MetadataService {
         Metadata originalMetadata = metadataRepository.findById(id).orElseThrow(
                 () -> new MetadataNotFoundException("Metadata not found"));
         Metadata updatedMetadata = metadataMapper.update(originalMetadata, addUpdateMetadataDto);
+        log.info("metadata {} updated", id) ;
         return metadataMapper.toMetadataDto(metadataRepository.save(updatedMetadata));
     }
 
     @Override
     @Transactional
     public List<MetadataGeneralDto> findAll() {
+        log.debug("findAll queried");
         return metadataMapper.toMetadataGeneralDtoList(metadataRepository.findAll());
     }
 
     @Override
     @Transactional
     public List<MetadataGeneralDto> findByDirector(String director) {
+        log.debug("search by {}", director);
         return metadataMapper.toMetadataGeneralDtoList(metadataRepository.findByDirectorContainingIgnoreCase(director));
     }
 }

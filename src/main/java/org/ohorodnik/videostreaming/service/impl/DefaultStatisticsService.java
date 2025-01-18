@@ -1,6 +1,7 @@
 package org.ohorodnik.videostreaming.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.ohorodnik.videostreaming.dto.StatisticsDto;
 import org.ohorodnik.videostreaming.mapper.StatisticsMapper;
 import org.ohorodnik.videostreaming.repository.StatisticsRepositoryCustom;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DefaultStatisticsService implements StatisticsService {
@@ -20,6 +22,7 @@ public class DefaultStatisticsService implements StatisticsService {
     @Override
     @Transactional
     public StatisticsDto retrieveStatistics(UUID uuid) {
+        log.info("Retrieve statistics for video {}", uuid);
         return statisticsMapper.toStatisticsDto(statisticsRepositoryCustom.retrieveStatistics(uuid));
     }
 }

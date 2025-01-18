@@ -67,10 +67,11 @@ public class DefaultVideoService implements VideoService {
             savedVideo.setStatistics(statistics);
             videoRepository.save(savedVideo);
 
+            log.info("Video has been saved to storage under uuid {}", fileUuid);
             return fileUuid;
         } catch (Exception ex) {
-            log.error("Exception occurred when trying to save the file", ex);
-            throw new StorageException("Exception occurred when trying to save the file");
+            log.error("Exception has occurred when trying to save the file", ex);
+            throw new StorageException("Exception has occurred when trying to save the file");
         }
     }
 
@@ -79,9 +80,11 @@ public class DefaultVideoService implements VideoService {
     public ChunkWithMetadata play(UUID uuid, Range range) {
         updateStatisticsView(uuid, range);
         PlayingVideoDto playingVideoDto = videoMapper.toPlayingVideoDto(findByUuidAndStatus(uuid));
+        String contentRange = constructContentRangeHeader(range, playingVideoDto.getSize());
+        log.debug("playing range {}", contentRange);
         return new ChunkWithMetadata(playingVideoDto,
                 calculateContentLengthHeader(range, playingVideoDto.getSize()),
-                constructContentRangeHeader(range, playingVideoDto.getSize()),
+                contentRange,
                 readChunk(uuid, range, playingVideoDto.getSize()));
     }
 
@@ -94,6 +97,7 @@ public class DefaultVideoService implements VideoService {
         video.getMetadata().setStatus(D);
         videoRepository.save(video);
         cache.invalidate(uuid);
+        log.info("video {} delisted", uuid);
         return uuid;
     }
 
@@ -105,7 +109,9 @@ public class DefaultVideoService implements VideoService {
         if (!path.endsWith("/")) {
             path = path + "/";
         }
-        storageService.download(uuid, path.concat(video.getOriginalFileName()));
+        String fileFullPath = path.concat(video.getOriginalFileName());
+        storageService.download(uuid, fileFullPath);
+        log.debug("video saved under {}", fileFullPath);
 
         updateStatisticsImpression(uuid);
         return videoMapper.toVideoDto(video);
