@@ -38,15 +38,14 @@ public class BaseContainerImpl {
                 .withUsername("test")
                 .withPassword("password")
                 .withDatabaseName("videostreaming");
-
         container.start();
     }
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", container::getJdbcUrl);
-        registry.add("spring.datasource.password", container::getPassword);
         registry.add("spring.datasource.username", container::getUsername);
+        registry.add("spring.datasource.password", container::getPassword);
     }
 
     protected String getResponseAsString(String jsonPath) {

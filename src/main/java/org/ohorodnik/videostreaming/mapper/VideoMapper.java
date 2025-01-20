@@ -3,6 +3,7 @@ package org.ohorodnik.videostreaming.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.ohorodnik.videostreaming.dto.PlayingVideoDto;
+import org.ohorodnik.videostreaming.dto.UploadVideoDto;
 import org.ohorodnik.videostreaming.dto.VideoDto;
 import org.ohorodnik.videostreaming.entity.Video;
 
@@ -13,4 +14,6 @@ public interface VideoMapper {
 
     @Mapping(target = "metadataDto", source = "metadata")
     VideoDto toVideoDto(Video video);
+
+    UploadVideoDto toUploadVideoDto(Video video);
 }

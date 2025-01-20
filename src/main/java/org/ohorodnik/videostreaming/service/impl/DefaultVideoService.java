@@ -5,6 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ohorodnik.videostreaming.dto.PlayingVideoDto;
+import org.ohorodnik.videostreaming.dto.UploadVideoDto;
 import org.ohorodnik.videostreaming.dto.VideoDto;
 import org.ohorodnik.videostreaming.entity.Statistics;
 import org.ohorodnik.videostreaming.entity.Video;
@@ -46,7 +47,7 @@ public class DefaultVideoService implements VideoService {
 
     @Override
     @Transactional
-    public UUID publish(MultipartFile file) {
+    public UploadVideoDto publish(MultipartFile file) {
         try {
             UUID fileUuid = UUID.randomUUID();
             Video video = Video.builder()
@@ -68,7 +69,7 @@ public class DefaultVideoService implements VideoService {
             videoRepository.save(savedVideo);
 
             log.info("Video has been saved to storage under uuid {}", fileUuid);
-            return fileUuid;
+            return videoMapper.toUploadVideoDto(savedVideo);
         } catch (Exception ex) {
             log.error("Exception has occurred when trying to save the file", ex);
             throw new StorageException("Exception has occurred when trying to save the file");

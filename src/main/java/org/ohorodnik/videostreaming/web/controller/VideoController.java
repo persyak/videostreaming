@@ -1,6 +1,7 @@
 package org.ohorodnik.videostreaming.web.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.ohorodnik.videostreaming.dto.UploadVideoDto;
 import org.ohorodnik.videostreaming.dto.VideoDto;
 import org.ohorodnik.videostreaming.service.VideoService;
 import org.ohorodnik.videostreaming.utils.range.Range;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,7 +44,7 @@ public class VideoController {
     @PostMapping(value = "/publish",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    protected UUID publish(@RequestParam("file") MultipartFile file) {
+    protected UploadVideoDto publish(@RequestPart("file") MultipartFile file) {
         return videoService.publish(file);
     }
 

@@ -2,11 +2,11 @@ package org.ohorodnik.videostreaming.service.impl;
 
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.ohorodnik.videostreaming.dto.MetadataDto;
 import org.ohorodnik.videostreaming.dto.PlayingVideoDto;
+import org.ohorodnik.videostreaming.dto.UploadVideoDto;
 import org.ohorodnik.videostreaming.dto.VideoDto;
 import org.ohorodnik.videostreaming.entity.Metadata;
 import org.ohorodnik.videostreaming.entity.Statistics;
@@ -22,10 +22,8 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.InputStream;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -89,28 +87,28 @@ public class DefaultVideoServiceTest {
     public void testPublish() {
         MultipartFile multipartFile;
 
-        new File("inputs").mkdir();
-        new File("inputs/test.txt").createNewFile();
-        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("Inputs/test.txt"))) {
-            bufferedWriter.write("This is a test file.");
-        }
-
-        File file = new File("inputs/test.txt");
+        File file = new File("src/test/resources/multipart/test.txt");
         try (FileInputStream input = new FileInputStream(file)) {
             multipartFile = new MockMultipartFile("test", input);
         }
 
+        UploadVideoDto testUploadVideoDto = UploadVideoDto.builder()
+                .id(1)
+                .originalFileName("testFileName.mov")
+                .uuid(uuid.toString())
+                .build();
+
         when(videoRepository.save(any(Video.class))).thenReturn(testVideo);
+        when(videoMapper.toUploadVideoDto(testVideo)).thenReturn(testUploadVideoDto);
 
-        UUID actual = defaultVideoService.publish(multipartFile);
+        UploadVideoDto actual = defaultVideoService.publish(multipartFile);
 
-        Assertions.assertNotNull(actual);
+        assertEquals(1, actual.getId());
+        assertEquals("testFileName.mov", actual.getOriginalFileName());
+        assertEquals(uuid.toString(), actual.getUuid());
 
         verify(videoRepository, times(2)).save(any(Video.class));
         verify(storageService).save(any(), any());
-
-        new File("Inputs/test.txt").delete();
-        new File("Inputs").delete();
     }
 
     @Test
